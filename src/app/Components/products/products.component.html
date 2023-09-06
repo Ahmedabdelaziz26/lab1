@@ -1,0 +1,108 @@
+<!-- <div class="container mt-5 border p-3 card">
+  <img class="card-img-top" src="{{ product.logo }}" alt="" />
+  <h4>{{ product.name }}</h4>
+  <div class="card-body">
+    <span>Branches  : </span>
+    <select class="mb-3">
+      <option *ngFor="let x of product.branchs">{{ x }}</option>
+    </select>
+    <button class="btn btn-secondary">Buy Now</button>
+  </div>
+</div> -->
+
+<div class="container text-center" *ngIf="show">
+  <div class="row d-flex justify-content-around">
+    <!-- [class.bg-warning]="item.Quantity == 1" -->
+    <div
+      class="card my-4 px-2 col-4"
+      appProductCard
+      *ngFor="let item of filteredList"
+      [ngClass]="{ 'bg-warning': item.Quantity == 1 }"
+    >
+      <img
+        appProductCard
+        class="card-img-top"
+        [src]="item.Img"
+        alt=""
+        (click)="productDetails(item.id)"
+      />
+      <h4>{{ item.Name | uppercase }}</h4>
+      <div class="card-body">
+        <h6 class="text-decoration-line-through">
+          Befor : {{ item.Price | currency }}
+        </h6>
+        <h5>Price : {{ item.Price | discount : 50 | currency }}</h5>
+        <!-- <p>Quantity : {{ item.Quantity }}</p> -->
+        <label>Quantity: {{ item.Quantity }}</label>
+        <input
+          type="number"
+          class="form-control"
+          [min]="0"
+          [max]="item.Quantity"
+          [(ngModel)]="item.selectedQuantity"
+          #inputQuantity 
+        />
+        <!-- template reference -->
+
+        <p>
+          <ng-container [ngSwitch]="item.CategoryID">
+            <ng-container *ngSwitchCase="1">Category : SAMSUNG</ng-container>
+            <ng-container *ngSwitchCase="2">Category : Apple</ng-container>
+            <ng-container *ngSwitchCase="3">Category : Xiaomi</ng-container>
+          </ng-container>
+        </p>
+
+        <!-- <p *ngif="showCategory === 1">Category : SAMSUNG</p>
+        <p *ngif="showCategory === 2">Category : Apple</p>
+        <p *ngif="showCategory === 1">Category : Xiaomi</p> -->
+        <button
+          class="btn btn-secondary me-3"
+          [disabled]="item.Quantity == 0"
+          (click)="toggleShow()"
+        >
+          Buy Now
+        </button>
+        <button
+          class="btn btn-secondary"
+          [disabled]="item.Quantity == 0"
+          (click)="buyProduct(item, inputQuantity.value)"
+        >
+          Add To Cart
+          <i class="fa-sharp fa-solid fa-cart-plus modifyIcon"></i>
+        </button>
+        <span class="row">
+          <ng-container [ngSwitch]="item.Quantity">
+            <ng-container *ngSwitchCase="0"
+              ><p class="text-danger fs-6 pt-3 text-start">
+                Out Of Stock
+              </p></ng-container
+            >
+            <ng-container *ngSwitchCase="1"
+              ><p class="text-danger fs-6 pt-3 text-start">
+                Last One Item
+              </p></ng-container
+            >
+            <ng-container *ngSwitchCase="2"
+              ><p class="text-danger fs-6 pt-3 text-start">
+                Last Two Item
+              </p></ng-container
+            >
+            <ng-container *ngSwitchDefault
+              ><p class="text-success fs-6 pt-3 text-start">
+                In Stock
+              </p></ng-container
+            >
+            <ng-container class="text-success fs-6 pt-3 text-end"
+              >Published :
+              {{ item.CreatedDate | date : "mediumDate" }}</ng-container
+            >
+          </ng-container>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!show" pt-5 mt-5>
+  <h3>Thank You {{ ClientName }}</h3>
+</div>
